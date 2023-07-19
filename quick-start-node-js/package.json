@@ -1,0 +1,19 @@
+{
+  "name": "greptime-cloud-quick-start",
+  "version": "1.0.0",
+  "description": "",
+  "bin": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/exporter-metrics-otlp-proto": "^0.41.0",
+    "@opentelemetry/host-metrics": "^0.33.0",
+    "@opentelemetry/sdk-metrics": "^1.15.0",
+    "minimist": "^1.2.8"
+  }
+}

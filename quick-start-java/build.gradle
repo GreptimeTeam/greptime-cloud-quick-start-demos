@@ -1,0 +1,24 @@
+plugins {
+    id 'application'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.opentelemetry:opentelemetry-api:1.28.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.28.0'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.28.0'
+    implementation 'io.opentelemetry:opentelemetry-semconv:1.28.0-alpha'
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-runtime-metrics:1.26.0-alpha'
+}
+
+application {
+    mainClass = 'opentelemetry.App'
+}
