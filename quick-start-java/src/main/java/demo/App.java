@@ -10,6 +10,8 @@ import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
 import io.opentelemetry.sdk.resources.Resource;
 
 import java.time.Duration;
+import org.apache.commons.cli.*;
+import java.util.Base64;
 
 import io.opentelemetry.instrumentation.runtimemetrics.*;
 
@@ -19,12 +21,16 @@ import io.opentelemetry.instrumentation.runtimemetrics.*;
  * wastefully to calculate each request.
  */
 public final class App {
-    static OpenTelemetry initOpenTelemetry() {
+
+    static OpenTelemetry initOpenTelemetry(String dbHost, String db, String username, String password) {
         // Include required service.name resource attribute on all spans and metrics
         Resource resource =
                 Resource.getDefault()
                         .merge(Resource.builder()
-                                .put(SERVICE_NAME, "OtlpExporterExample").build());
+                                .put(SERVICE_NAME, "greptime-cloud-quick-start-java").build());
+        String endpoint = String.format("https://%s/v1/otlp/v1/metrics", dbHost);
+        String auth = username + ":" + password;
+        String b64Auth = new String(Base64.getEncoder().encode(auth.getBytes()));
 
         OpenTelemetrySdk openTelemetrySdk =
                 OpenTelemetrySdk.builder()
@@ -34,8 +40,10 @@ public final class App {
                                         .setResource(resource)
                                         .registerMetricReader(
                                                 PeriodicMetricReader
-                                                        .builder(OtlpHttpMetricExporter.builder().
-                                                                setEndpoint("http://192.168.216.234:4000/v1/otlp/v1/metrics")
+                                                        .builder(OtlpHttpMetricExporter.builder()
+                                                                .setEndpoint(endpoint)
+                                                                .addHeader("x-greptime-db-name", db)
+                                                                .addHeader("Authorization", String.format("Basic %s", b64Auth))
                                                                 .setTimeout(Duration.ofSeconds(5))
                                                                 .build())
                                                         .setInterval(Duration.ofSeconds(2))
@@ -46,9 +54,41 @@ public final class App {
         return openTelemetrySdk;
     }
 
+    static String getCmdArgValue(String argName ,String[] args){
+        Options options = new Options();
+        Option dbHost = new Option("h", "host", true, "The host address of the GreptimeCloud service");
+        Option db = new Option("db", "database", true, "The database of the GreptimeCloud service");
+        Option username = new Option("u", "username", true, "The username of the GreptimeCloud service");
+        Option password = new Option("p", "password", true, "The password of the GreptimeCloud service");
+        options.addOption(dbHost);
+        options.addOption(db);
+        options.addOption(username);
+        options.addOption(password);
+        CommandLine cmd;
+        CommandLineParser parser = new BasicParser();
+        HelpFormatter helper = new HelpFormatter();
+        try {
+            cmd = parser.parse(options, args);
+            if (cmd.hasOption(argName)) {
+                String arg = cmd.getOptionValue(argName);
+                return arg;
+            }
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            helper.printHelp("Usage:", options);
+            System.exit(-1);
+        }
+        helper.printHelp("Usage:", options);
+        System.exit(-1);
+        return "";
+    }
     public static void main(String[] args) throws Exception {
-        System.out.println(args);
-        OpenTelemetry openTelemetry = initOpenTelemetry();
+        String dbHost = getCmdArgValue("host", args);
+        String db = getCmdArgValue("database", args);
+        String username = getCmdArgValue("username", args);
+        String password = getCmdArgValue("password", args);
+
+        OpenTelemetry openTelemetry = initOpenTelemetry(dbHost, db, username, password);
         BufferPools.registerObservers(openTelemetry);
         Classes.registerObservers(openTelemetry);
         Cpu.registerObservers(openTelemetry);
