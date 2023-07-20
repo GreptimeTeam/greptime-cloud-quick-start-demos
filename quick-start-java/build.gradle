@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'application'
 }
 
@@ -11,6 +12,12 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    manifest {
+        attributes("Main-Class": "demo.App")
+    }
+}
+
 dependencies {
     implementation 'io.opentelemetry:opentelemetry-api:1.28.0'
     implementation 'io.opentelemetry:opentelemetry-sdk:1.28.0'
@@ -20,5 +27,5 @@ dependencies {
 }
 
 application {
-    mainClass = 'opentelemetry.App'
+    mainClass = 'demo.App'
 }

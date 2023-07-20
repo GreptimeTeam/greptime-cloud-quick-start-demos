@@ -1,1 +1,2 @@
-rootProject.name = 'otlp-java'
+rootProject.name = 'quick-start-java'
+include('lib')

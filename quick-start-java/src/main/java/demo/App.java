@@ -1,4 +1,4 @@
-package opentelemetry;
+package demo;
 
 import static io.opentelemetry.semconv.resource.attributes.ResourceAttributes.SERVICE_NAME;
 
@@ -36,8 +36,9 @@ public final class App {
                                                 PeriodicMetricReader
                                                         .builder(OtlpHttpMetricExporter.builder().
                                                                 setEndpoint("http://192.168.216.234:4000/v1/otlp/v1/metrics")
+                                                                .setTimeout(Duration.ofSeconds(5))
                                                                 .build())
-                                                        .setInterval(Duration.ofMillis(5000))
+                                                        .setInterval(Duration.ofSeconds(2))
                                                         .build())
                                         .build())
                         .buildAndRegisterGlobal();
@@ -46,6 +47,7 @@ public final class App {
     }
 
     public static void main(String[] args) throws Exception {
+        System.out.println(args);
         OpenTelemetry openTelemetry = initOpenTelemetry();
         BufferPools.registerObservers(openTelemetry);
         Classes.registerObservers(openTelemetry);
@@ -53,7 +55,7 @@ public final class App {
         GarbageCollector.registerObservers(openTelemetry);
         MemoryPools.registerObservers(openTelemetry);
         Threads.registerObservers(openTelemetry);
-
+        System.out.println("Sending metrics...");
         while (true) {
             Thread.sleep(2000);
         }
