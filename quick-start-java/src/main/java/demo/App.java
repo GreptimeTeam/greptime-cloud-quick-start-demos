@@ -58,8 +58,8 @@ public final class App {
         Options options = new Options();
         Option dbHost = new Option("h", "host", true, "The host address of the GreptimeCloud service");
         Option db = new Option("db", "database", true, "The database of the GreptimeCloud service");
-        Option username = new Option("u", "username", true, "The username of the GreptimeCloud service");
-        Option password = new Option("p", "password", true, "The password of the GreptimeCloud service");
+        Option username = new Option("u", "username", true, "The username of the database");
+        Option password = new Option("p", "password", true, "The password of the database");
         options.addOption(dbHost);
         options.addOption(db);
         options.addOption(username);

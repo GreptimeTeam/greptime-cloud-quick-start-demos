@@ -20,8 +20,8 @@ import (
 
 var dbHost = flag.String("host", "localhost", "The host address of the GreptimeCloud service")
 var db = flag.String("db", "public", "The name of the database of the GreptimeCloud service")
-var username = flag.String("username", "greptimeUser", "The username of the GreptimeCloud service")
-var password = flag.String("password", "greptimePassword", "The password of the GreptimeCloud service")
+var username = flag.String("username", "greptimeUser", "The username of the database")
+var password = flag.String("password", "greptimePassword", "The password of the database")
 
 func main() {
 	flag.Parse()
